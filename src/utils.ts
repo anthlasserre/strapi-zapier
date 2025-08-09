@@ -186,7 +186,7 @@ export const getContentTypesForDropdown = async (z: ZObject, bundle: Bundle) => 
       ct.uid.startsWith('api::') // Only user-defined API content types
     )
     .map(ct => ({
-      id: ct.schema.collectionName,
+      id: ct.schema.pluralName,
       label: ct.schema.displayName,
     }));
 };

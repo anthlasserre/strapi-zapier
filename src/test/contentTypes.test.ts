@@ -14,7 +14,7 @@ test('getContentTypesForDropdown should filter and format content types correctl
             schema: {
               kind: 'collectionType',
               displayName: 'Permission',
-              collectionName: 'permissions',
+              pluralName: 'permissions',
               visible: false,
             },
           },
@@ -26,7 +26,7 @@ test('getContentTypesForDropdown should filter and format content types correctl
             schema: {
               kind: 'collectionType',
               displayName: 'User',
-              collectionName: 'users',
+              pluralName: 'users',
               visible: true,
             },
           },
@@ -37,7 +37,7 @@ test('getContentTypesForDropdown should filter and format content types correctl
             schema: {
               kind: 'collectionType',
               displayName: 'Article',
-              collectionName: 'articles',
+              pluralName: 'articles',
               visible: true,
             },
           },
@@ -48,7 +48,7 @@ test('getContentTypesForDropdown should filter and format content types correctl
             schema: {
               kind: 'singleType',
               displayName: 'Homepage',
-              collectionName: 'homepages',
+              pluralName: 'homepages',
               visible: true,
             },
           },
@@ -59,7 +59,7 @@ test('getContentTypesForDropdown should filter and format content types correctl
             schema: {
               kind: 'collectionType',
               displayName: 'Blog Post',
-              collectionName: 'blog-posts',
+              pluralName: 'blog-posts',
               visible: true,
             },
           },
