@@ -16,27 +16,22 @@ import { getContentTypesForDropdown } from './utils.js';
 export default defineApp({
   version: packageJson.version,
   platformVersion,
-
   authentication,
   beforeRequest: [...befores],
   afterResponse: [...afters],
-
   // Hydrators
   hydrators: {
     contentTypes: contentTypesHydrator,
   },
-
   // Triggers
   triggers: {
     [newEntryTrigger.key]: newEntryTrigger,
     [updatedEntryTrigger.key]: updatedEntryTrigger,
   },
-
   // Searches
   searches: {
     [findEntrySearch.key]: findEntrySearch,
   },
-
   resources: {
     "content_types": {
       key: "content_types",
@@ -46,8 +41,9 @@ export default defineApp({
           perform: getContentTypesForDropdown,
         },
         display: {
+          hidden: true,
           label: "Content Types",
-          description: "Content Types",
+          description: "Lists all available content types in your Strapi instance.",
         },
       }
     }

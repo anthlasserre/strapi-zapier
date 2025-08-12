@@ -187,7 +187,7 @@ export const getContentTypesForDropdown = async (z: ZObject, bundle: Bundle) => 
     )
     .map(ct => ({
       id: ct.schema.pluralName,
-      label: ct.schema.displayName,
+      name: ct.schema.displayName,
     }));
 };
 

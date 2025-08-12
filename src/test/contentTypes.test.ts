@@ -78,8 +78,8 @@ test('getContentTypesForDropdown should filter and format content types correctl
   const result = await getContentTypesForDropdown(mockZ, mockBundle);
 
   expect(result).toEqual([
-    { key: 'article', label: 'Article' },
-    { key: 'blog-post', label: 'Blog Post' },
+    { id: 'article', name: 'Article' },
+    { id: 'blog-post', name: 'Blog Post' },
   ]);
 
   // Should only include API content types that are collection types and visible
