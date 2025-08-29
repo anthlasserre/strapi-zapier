@@ -1,5 +1,5 @@
 import type { ZObject, Bundle } from 'zapier-platform-core';
-import { STRAPI_API_BASE, STRAPI_ADMIN_API_BASE } from './constants.js';
+import { STRAPI_API_BASE } from './constants.js';
 
 // Types for Strapi API responses
 export interface StrapiContentType {

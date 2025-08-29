@@ -13,7 +13,7 @@ const inputFields = defineInputFields([
     required: true,
     label: 'Content Type',
     helpText: 'Select the content type to monitor for updated entries',
-    dynamic: 'content_types.id.name',
+    dynamic: 'content_types.id.label',
   },
   {
     key: 'limit',
