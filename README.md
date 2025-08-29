@@ -87,12 +87,22 @@ The integration uses Strapi's API token authentication. You'll need to provide:
 ### Creates
 
 #### Create Entry
-- **Action**: Creates a new entry in any content type
+- **Action**: Creates a new entry in any content type with basic fields
 - **Inputs**:
   - Content Type: Select the content type to create in
   - Title: The title of the entry
   - Description: The description of the entry (optional)
   - Published: Whether to publish the entry immediately (default: true)
+  - Additional Fields: Any other fields will be passed through to Strapi
+
+#### Create Entry (Advanced)
+- **Action**: Creates a new entry in any content type with dynamic field generation
+- **Inputs**:
+  - Content Type: Select the content type to create in
+  - Published: Whether to publish the entry immediately (default: true)
+  - Dynamic Fields: Fields are automatically generated based on the content type's schema
+  - Type Validation: Values are automatically converted to the correct data types
+  - Enumeration Support: Dropdown choices for enumeration fields
 
 ### Searches
 
@@ -125,6 +135,14 @@ The integration uses Strapi's API token authentication. You'll need to provide:
 2. Select your "Order" content type
 3. Connect to Gmail "Send Email" action
 4. Send notification emails when order status changes
+
+### Example 4: Create a New Blog Post from a Form Submission
+
+1. Set up a Zap with "New Form Submission" trigger (from your form service)
+2. Connect to "Create Entry (Advanced)" action
+3. Select your "Blog Post" content type
+4. Map form fields to the dynamically generated content type fields
+5. Automatically create published blog posts from form submissions
 
 ## Development
 

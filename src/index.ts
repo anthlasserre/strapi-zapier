@@ -9,6 +9,9 @@ import { contentTypesHydrator } from './hydrators.js';
 import newEntryTrigger from './triggers/newEntry.js';
 import updatedEntryTrigger from './triggers/updatedEntry.js';
 
+// Import creates
+import createEntryAdvancedAction from './creates/createEntryAdvanced.js';
+
 // Import searches
 import findEntrySearch from './searches/findEntry.js';
 import { getContentTypesForDropdown } from './utils.js';
@@ -27,6 +30,10 @@ export default defineApp({
   triggers: {
     [newEntryTrigger.key]: newEntryTrigger,
     [updatedEntryTrigger.key]: updatedEntryTrigger,
+  },
+  // Creates
+  creates: {
+    [createEntryAdvancedAction.key]: createEntryAdvancedAction,
   },
   // Searches
   searches: {
