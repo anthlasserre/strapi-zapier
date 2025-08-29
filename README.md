@@ -87,22 +87,13 @@ The integration uses Strapi's API token authentication. You'll need to provide:
 ### Creates
 
 #### Create Entry
-- **Action**: Creates a new entry in any content type with basic fields
+- **Action**: Creates a new entry in any content type with dynamic field support
 - **Inputs**:
   - Content Type: Select the content type to create in
-  - Title: The title of the entry
-  - Description: The description of the entry (optional)
+  - Entry Fields (JSON): JSON object containing all the fields for this entry
   - Published: Whether to publish the entry immediately (default: true)
-  - Additional Fields: Any other fields will be passed through to Strapi
-
-#### Create Entry (Advanced)
-- **Action**: Creates a new entry in any content type with dynamic field generation
-- **Inputs**:
-  - Content Type: Select the content type to create in
-  - Published: Whether to publish the entry immediately (default: true)
-  - Dynamic Fields: Fields are automatically generated based on the content type's schema
-  - Type Validation: Values are automatically converted to the correct data types
-  - Enumeration Support: Dropdown choices for enumeration fields
+  - **Field Validation**: Automatically validates and converts field types based on the content type schema
+  - **Schema-Based**: Uses the actual content type schema to validate fields
 
 ### Searches
 
@@ -112,6 +103,23 @@ The integration uses Strapi's API token authentication. You'll need to provide:
   - Content Type: Select the content type to search in
   - Search Query: Text to search for in title or description (optional)
   - Limit: Maximum number of entries to return (default: 10)
+
+### Resources
+
+#### Content Types
+- **Purpose**: Lists all available content types in your Strapi instance
+- **Use**: Automatically populates dropdowns for content type selection
+- **Filtering**: Only shows user-defined API content types (excludes admin and plugin types)
+
+#### Content Type Fields
+- **Purpose**: Lists all available fields for each content type
+- **Use**: Helps you understand what fields are available for each content type
+- **Format**: Shows field name, type, and whether it's required
+
+#### Content Type Schema
+- **Purpose**: Provides detailed schema information for each content type
+- **Use**: Shows all field details including types, validation rules, and default values
+- **Format**: Complete schema with field metadata for creating entries
 
 ## Usage Examples
 
@@ -139,10 +147,19 @@ The integration uses Strapi's API token authentication. You'll need to provide:
 ### Example 4: Create a New Blog Post from a Form Submission
 
 1. Set up a Zap with "New Form Submission" trigger (from your form service)
-2. Connect to "Create Entry (Advanced)" action
+2. Connect to "Create Entry" action
 3. Select your "Blog Post" content type
-4. Map form fields to the dynamically generated content type fields
-5. Automatically create published blog posts from form submissions
+4. Use the "Content Type Schema" resource to see available fields
+5. Create a JSON object with all the required fields:
+   ```json
+   {
+     "title": "My New Blog Post",
+     "content": "This is the blog post content",
+     "author": "John Doe",
+     "category": "technology"
+   }
+   ```
+6. Automatically create published blog posts from form submissions
 
 ## Development
 

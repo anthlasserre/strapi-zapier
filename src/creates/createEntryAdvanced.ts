@@ -98,10 +98,17 @@ const inputFields = defineInputFields([
     helpText: 'Whether the entry should be published immediately',
     default: 'true',
   },
+  {
+    key: 'fields',
+    type: 'string',
+    required: true,
+    label: 'Entry Fields (JSON)',
+    helpText: 'JSON object containing all the fields for this entry. Use the "Content Type Schema" resource to see available fields.',
+  },
 ]);
 
 const perform = (async (z, bundle) => {
-  const { contentType, published = true, ...fieldData } = bundle.inputData;
+  const { contentType, published = true, fields } = bundle.inputData;
 
   // Get the content type schema to validate fields
   const contentTypes = await getContentTypes(z, bundle);
@@ -111,19 +118,29 @@ const perform = (async (z, bundle) => {
     throw new Error(`Content type '${contentType}' not found`);
   }
 
+  // Parse the fields JSON
+  let fieldData: Record<string, any> = {};
+  if (fields && typeof fields === 'string') {
+    try {
+      fieldData = JSON.parse(fields);
+    } catch (error) {
+      throw new Error(`Invalid JSON in fields: ${error}`);
+    }
+  }
+
   // Prepare the data for Strapi
   const data: Record<string, any> = {
     publishedAt: published ? new Date().toISOString() : null,
   };
 
-  // Process each field based on the content type schema
+  // Process all provided fields based on the content type schema
   Object.entries(fieldData).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
       const attribute = selectedContentType.schema.attributes[key];
 
       if (attribute) {
         // Convert value based on field type
-        let processedValue = value;
+        let processedValue: any = value;
 
         switch (attribute.type) {
           case 'boolean':
@@ -154,6 +171,9 @@ const perform = (async (z, bundle) => {
               }
             }
             break;
+          default:
+            processedValue = value;
+            break;
         }
 
         data[key] = processedValue;
@@ -169,12 +189,12 @@ const perform = (async (z, bundle) => {
 }) satisfies CreatePerform<InferInputData<typeof inputFields>>;
 
 export default defineCreate({
-  key: 'create_entry_advanced',
+  key: 'create_entry',
   noun: 'Entry',
 
   display: {
-    label: 'Create Entry (Advanced)',
-    description: 'Creates a new entry in a Strapi content type with dynamic field generation.',
+    label: 'Create Entry',
+    description: 'Creates a new entry in a Strapi content type with comprehensive field support.',
   },
 
   operation: {
@@ -184,6 +204,7 @@ export default defineCreate({
       id: 1,
       title: 'New Entry',
       description: 'This is a new entry',
+      content: 'This is the content of the entry',
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
       publishedAt: '2024-01-01T00:00:00.000Z',
