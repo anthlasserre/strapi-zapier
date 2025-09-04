@@ -23,16 +23,39 @@ const inputFields = defineInputFields([
     helpText: 'Maximum number of entries to return (default: 50)',
     default: '50',
   },
+  {
+    key: 'params',
+    type: 'text',
+    required: false,
+    label: 'Additional Parameters',
+    helpText: 'Additional parameters to pass to the API (e.g., populate[transaction], filters[status][$eq]=published). Separate multiple parameters with &.',
+  },
 ]);
 
 const perform = (async (z, bundle) => {
-  const { contentType, limit = 50 } = bundle.inputData;
+  const { contentType, limit = 50, params } = bundle.inputData;
 
-  // Get recently updated entries for the selected content type
-  const response = await getEntries(z, bundle, contentType, {
+  // Prepare parameters
+  const searchParams: Record<string, any> = {
     'pagination[pageSize]': limit.toString(),
     'sort': 'updatedAt:desc',
-  });
+  };
+
+  // Parse and merge additional parameters if provided
+  if (params && typeof params === 'string') {
+    try {
+      const urlParams = new URLSearchParams(params);
+      urlParams.forEach((value, key) => {
+        searchParams[key] = value;
+      });
+    } catch (error) {
+      throw new Error(`Invalid parameters format. Use URL parameters (e.g., populate[transaction]). Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  // Get recently updated entries for the selected content type
+  const response = await getEntries(z, bundle, contentType, searchParams);
+
 
   // Convert entries to Zapier format and ensure each has an id
   return response.data.map(entry => ({

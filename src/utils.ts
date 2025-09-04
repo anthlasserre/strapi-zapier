@@ -121,10 +121,22 @@ export const createEntry = async (
   z: ZObject,
   bundle: Bundle,
   contentType: string,
-  data: Record<string, any>
+  data: Record<string, any>,
+  params?: Record<string, any>
 ): Promise<StrapiResponse<StrapiEntry>> => {
+  let url = `${bundle.authData.baseUrl}${STRAPI_API_BASE}/${contentType}`;
+
+  // Add query parameters if provided
+  if (params && Object.keys(params).length > 0) {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      queryParams.append(key, value.toString());
+    });
+    url += `?${queryParams.toString()}`;
+  }
+
   const response = await z.request({
-    url: `${bundle.authData.baseUrl}${STRAPI_API_BASE}/${contentType}`,
+    url,
     headers: {
       'Authorization': `Bearer ${bundle.authData.apiToken}`,
       'Content-Type': 'application/json',

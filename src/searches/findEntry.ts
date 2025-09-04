@@ -30,25 +30,44 @@ const inputFields = defineInputFields([
     helpText: 'Maximum number of entries to return (default: 10)',
     default: '10',
   },
+  {
+    key: 'params',
+    type: 'text',
+    required: false,
+    label: 'Additional Parameters',
+    helpText: 'Additional parameters to pass to the API (e.g., populate[transaction], filters[status][$eq]=published). Separate multiple parameters with &.',
+  },
 ]);
 
 const perform = (async (z, bundle) => {
-  const { contentType, query, limit = 10 } = bundle.inputData;
+  const { contentType, query, limit = 10, params: additionalParams } = bundle.inputData;
 
   // Prepare search parameters
-  const params: Record<string, any> = {
+  const searchParams: Record<string, any> = {
     'pagination[pageSize]': limit.toString(),
     'sort': 'createdAt:desc',
   };
 
   // Add search filter if query is provided
   if (query) {
-    params['filters[title][$containsi]'] = query;
-    params['filters[description][$containsi]'] = query;
+    searchParams['filters[title][$containsi]'] = query;
+    searchParams['filters[description][$containsi]'] = query;
+  }
+
+  // Parse and merge additional parameters if provided
+  if (additionalParams && typeof additionalParams === 'string') {
+    try {
+      const urlParams = new URLSearchParams(additionalParams);
+      urlParams.forEach((value, key) => {
+        searchParams[key] = value;
+      });
+    } catch (error) {
+      throw new Error(`Invalid parameters format. Use URL parameters (e.g., populate[transaction]). Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   // Get entries
-  const response = await getEntries(z, bundle, contentType, params);
+  const response = await getEntries(z, bundle, contentType, searchParams);
 
   // Convert entries to Zapier format
   return response.data.map(convertStrapiEntryToZapier);

@@ -24,16 +24,36 @@ const inputFields = defineInputFields([
     label: 'Entry Fields (JSON)',
     helpText: 'JSON object containing all the fields for this entry. Use the "Content Type Schema" resource to see available fields.',
   },
+  {
+    key: 'params',
+    type: 'text',
+    required: false,
+    label: 'Additional Parameters',
+    helpText: 'Additional parameters to pass to the API when creating the entry (e.g., populate[transaction]). Separate multiple parameters with &.',
+  },
 ]);
 
 const perform = (async (z, bundle) => {
-  const { contentType, fields } = bundle.inputData;
+  const { contentType, fields, params } = bundle.inputData;
 
   // Parse the fields JSON
   const data = JSON.parse(fields);
 
+  // Parse additional parameters if provided
+  let additionalParams: Record<string, any> = {};
+  if (params && typeof params === 'string') {
+    try {
+      const urlParams = new URLSearchParams(params);
+      urlParams.forEach((value, key) => {
+        additionalParams[key] = value;
+      });
+    } catch (error) {
+      throw new Error(`Invalid parameters format. Use URL parameters (e.g., populate[transaction]). Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   // Create the entry
-  const response = await createEntry(z, bundle, contentType, data);
+  const response = await createEntry(z, bundle, contentType, data, additionalParams);
 
   // Convert to Zapier format
   return convertStrapiEntryToZapier(response.data);
