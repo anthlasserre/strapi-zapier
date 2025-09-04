@@ -56,10 +56,12 @@ const perform = (async (z, bundle) => {
   // Get recently updated entries for the selected content type
   const response = await getEntries(z, bundle, contentType, searchParams);
 
+  // Generate a unique ID for each entry
+  const uniqueId = crypto.randomUUID();
 
   // Convert entries to Zapier format and ensure each has an id
   return response.data.map(entry => ({
-    id: entry.id.toString(),
+    id: uniqueId,
     ...convertStrapiEntryToZapier(entry),
   }));
 }) satisfies PollingTriggerPerform<InferInputData<typeof inputFields>>;
